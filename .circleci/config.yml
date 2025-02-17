@@ -20,7 +20,7 @@ jobs:
           command: |
            echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
-            kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:gurudittigoswami02@gmail.com:cluster/demo-clusture
+            kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:590183757765:cluster/demo-clusture
             kubectl config current-context
             kubectl config view
 
