@@ -16,14 +16,12 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
 
-      # Step 2: Verify AWS Credentials and Connection
+      # Step 2: Verify AWS Credentials
       - run:
           name: Verify AWS Credentials
           command: |
             echo "Verifying AWS credentials..."
-            # Verify if AWS credentials are correctly set up
             aws sts get-caller-identity --query "Arn" --output text
-            # Verify if the region is valid by describing available EC2 regions
             aws ec2 describe-regions --query "Regions[*].RegionName" --output text
 
       # Step 3: Set Up Kubernetes Context for EKS
@@ -32,8 +30,13 @@ jobs:
           command: |
             echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
-            kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER_NAME
+            # Use the EKS cluster name as the context
+            kubectl config use-context $EKS_CLUSTER_NAME
+
+            # Verify current kubectl context
             kubectl config current-context
+
+            # View the full kubeconfig to ensure it's set up correctly
             kubectl config view
 
       # Step 4: Deploy to Kubernetes (EKS)
