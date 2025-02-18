@@ -3,10 +3,11 @@ version: 2.1
 jobs:
   deploy_to_kubernetes:
     docker:
-      - image: alpine/k8s:1.26.13  # Use a Docker image with kubectl and kubectl tools
+      - image: alpine/k8s:1.26.13  # Use a Docker image with kubectl tools
     steps:
       - checkout  # Checkout the repo files
 
+      # Step 1: Set up AWS Credentials
       - run:
           name: Set Up AWS Credentials
           command: |
@@ -15,15 +16,27 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
 
+      # Step 2: Verify AWS Credentials and Connection
+      - run:
+          name: Verify AWS Credentials
+          command: |
+            echo "Verifying AWS credentials..."
+            # Verify if AWS credentials are correctly set up
+            aws sts get-caller-identity --query "Arn" --output text
+            # Verify if the region is valid by describing available EC2 regions
+            aws ec2 describe-regions --query "Regions[*].RegionName" --output text
+
+      # Step 3: Set Up Kubernetes Context for EKS
       - run:
           name: Set Up Kubernetes Context for EKS
           command: |
-           echo $KUBECONFIG_DATA | base64 -d > kubeconfig
+            echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
-            kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:590183757765:cluster/demo-clusture
+            kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER_NAME
             kubectl config current-context
             kubectl config view
 
+      # Step 4: Deploy to Kubernetes (EKS)
       - run:
           name: Deploy to Kubernetes (EKS)
           command: |
