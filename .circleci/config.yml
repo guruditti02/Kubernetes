@@ -30,14 +30,22 @@ jobs:
           command: |
             echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
-            # Use the EKS cluster name as the context
-            kubectl config use-context $EKS_CLUSTER_NAME
 
-            # Verify current kubectl context
+            # Verify the available contexts
+            echo "Available contexts in kubeconfig:"
+            kubectl config get-contexts
+
+            # Ensure the context for the EKS cluster exists and use it
+            echo "Using context: $EKS_CLUSTER_NAME"
+            if kubectl config get-contexts | grep -q "$EKS_CLUSTER_NAME"; then
+              kubectl config use-context $EKS_CLUSTER_NAME
+            else
+              echo "Error: Context $EKS_CLUSTER_NAME not found in kubeconfig."
+              exit 1
+            fi
+
+            # Verify current context
             kubectl config current-context
-
-            # View the full kubeconfig to ensure it's set up correctly
-            kubectl config view
 
       # Step 4: Deploy to Kubernetes (EKS)
       - run:
