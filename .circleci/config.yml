@@ -19,26 +19,39 @@ jobs:
       # Step 2: Verify AWS Credentials
       - run:
           name: Verify AWS Credentials
-          command:
-            - echo "Verifying AWS credentials..."
-            - aws sts get-caller-identity
+          command: |
+              echo "Verifying AWS credentials..."
+              aws sts get-caller-identity
 
       # Step 3: Set Up Kubernetes Context for EKS
       - run:
           name: Set Up Kubernetes Context for EKS
           command: |
+            echo "Generate K8s Config File using AWS authentication..."
             aws eks update-kubeconfig --region us-east-1 --name demo-clusture
-
             # Verify the available contexts
-            echo "Available contexts in kubeconfig:"
+            echo "Verify contexts in kubeconfig..."
             kubectl config get-contexts
-            kubectl get pods
 
       # Step 4: Deploy to Kubernetes (EKS)
       - run:
           name: Deploy to Kubernetes (EKS)
           command: |
-            kubectl run testpod --image=nginx
+            echo "Applying WebApp K8s Manifests..."
+            kubectl apply -f mongo-secrets.yaml
+            kubectl apply -f mongo.yaml
+            kubectl apply -f mongo-configMap.yaml
+            kubectl apply -f mongo-express.yaml
+            kubectl apply -f my-app.yaml
+
+       # Step 5: Verify  Kubernetes deployment
+      - run:
+          name: Verify deployments  
+          command: |
+            echo "Applying WebApp K8s Manifests..."
+            kubectl get pods
+            kubectl get services
+            
 workflows:
   version: 2
   deploy:
