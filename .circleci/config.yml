@@ -42,7 +42,6 @@ jobs:
             kubectl apply -f mongo.yaml
             kubectl apply -f mongo-configMap.yaml
             kubectl apply -f mongo-express.yaml
-            kubectl apply -f my-app.yaml
 
        # Step 5: Verify  Kubernetes deployment
       - run:
