@@ -24,21 +24,25 @@ jobs:
             aws sts get-caller-identity --query "Arn" --output text
             aws ec2 describe-regions --query "Regions[*].RegionName" --output text
 
-      # Step 3: Decode Kubeconfig and Set Up Kubernetes Context for EKS
+      # Step 3: Decode and Verify Kubeconfig File
       - run:
-          name: Set Up Kubernetes Context for EKS
+          name: Decode and Verify Kubeconfig
           command: |
             # Decode the Kubeconfig and save it to a file
             echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
 
-            # Debugging: List available contexts
+            # Display the Kubeconfig content (for debugging)
+            echo "Kubeconfig file content:"
+            cat $KUBECONFIG
+
+            # List available contexts
             kubectl config get-contexts
 
-            # Step: Use the EKS context
+            # Set and verify the correct context
             kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER_NAME
 
-            # Verify current context
+            # Verify the current context
             kubectl config current-context
 
       # Step 4: Deploy to Kubernetes (EKS)
