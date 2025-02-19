@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes (EKS)
           command: |
-            kubectl run NAME --image=nginx
+            kubectl run testpod --image=nginx
 
 workflows:
   version: 2
