@@ -17,25 +17,25 @@ jobs:
             aws configure set default.region $AWS_DEFAULT_REGION
 
       # Step 2: Verify AWS Credentials
+      # aws sts get-caller-identity --query "Arn" --output text
+      # aws ec2 describe-regions --query "Regions[*].RegionName" --output text
+
       - run:
           name: Verify AWS Credentials
           command: |
             echo "Verifying AWS credentials..."
-            aws sts get-caller-identity --query "Arn" --output text
-            aws ec2 describe-regions --query "Regions[*].RegionName" --output text
+            aws sts get-caller-identity
 
       # Step 3: Set Up Kubernetes Context for EKS
       - run:
           name: Set Up Kubernetes Context for EKS
           command: |
-            echo $KUBECONFIG_DATA
-            echo $KUBECONFIG_DATA | base64 -d > kubeconfig
-            export KUBECONFIG=kubeconfig
-            echo $KUBECONFIG
+            aws eks update-kubeconfig --region us-east-1 --name demo-clusture
 
             # Verify the available contexts
             echo "Available contexts in kubeconfig:"
             kubectl config get-contexts
+            kubectl get pods
 
             # Ensure the context for the EKS cluster exists and use it
             echo "Using context: $EKS_CLUSTER_NAME"
