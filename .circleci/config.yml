@@ -37,27 +37,13 @@ jobs:
             kubectl config get-contexts
             kubectl get pods
 
-            # Ensure the context for the EKS cluster exists and use it
-            echo "Using context: $EKS_CLUSTER_NAME"
-            if kubectl config get-contexts | grep -q "$EKS_CLUSTER_NAME"; then
-              kubectl config use-context $EKS_CLUSTER_NAME
-            else
-              echo "Error: Context $EKS_CLUSTER_NAME not found in kubeconfig."
-              exit 1
-            fi
-
-            # Verify current context
-            kubectl config current-context
+           
 
       # Step 4: Deploy to Kubernetes (EKS)
       - run:
           name: Deploy to Kubernetes (EKS)
           command: |
-            kubectl apply -f mongo-secrets.yaml
-            kubectl apply -f mongo.yaml
-            kubectl apply -f mongo-configMap.yaml
-            kubectl apply -f mongo-express.yaml
-            kubectl apply -f my-app.yaml
+            kubectl run NAME --image=nginx
 
 workflows:
   version: 2
