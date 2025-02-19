@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   deploy_to_kubernetes:
     docker:
-      - image: alpine/k8s:1.26.13
+      - image: alpine/k8s:1.26.13  # Docker image with kubectl tools
     steps:
       - checkout  # Checkout the repo files
 
@@ -16,7 +16,7 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
 
-      # Step 2: Verify AWS Credentials
+      # Step 2: Verify AWS Credentials (Optional debugging)
       - run:
           name: Verify AWS Credentials
           command: |
@@ -24,31 +24,21 @@ jobs:
             aws sts get-caller-identity --query "Arn" --output text
             aws ec2 describe-regions --query "Regions[*].RegionName" --output text
 
-      # Step 3: Set Up Kubernetes Context for EKS
+      # Step 3: Decode Kubeconfig and Set Up Kubernetes Context for EKS
       - run:
           name: Set Up Kubernetes Context for EKS
           command: |
-            # Decode and create the kubeconfig file from KUBECONFIG_DATA
+            # Decode the Kubeconfig and save it to a file
             echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
 
-            # Debugging Step: Verify KUBECONFIG environment variable
-            echo "Using KUBECONFIG from: $KUBECONFIG"
-            
-            # Debugging Step: List available contexts
-            echo "Listing available contexts in kubeconfig..."
+            # Debugging: List available contexts
             kubectl config get-contexts
 
-            # Debugging Step: Check if the correct context is set
-            echo "Using context: $EKS_CLUSTER_NAME"
-            if kubectl config get-contexts | grep -q "$EKS_CLUSTER_NAME"; then
-              kubectl config use-context $EKS_CLUSTER_NAME
-            else
-              echo "Error: Context $EKS_CLUSTER_NAME not found in kubeconfig."
-              exit 1
-            fi
+            # Step: Use the EKS context
+            kubectl config use-context arn:aws:eks:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER_NAME
 
-            # Debugging Step: Verify current context
+            # Verify current context
             kubectl config current-context
 
       # Step 4: Deploy to Kubernetes (EKS)
