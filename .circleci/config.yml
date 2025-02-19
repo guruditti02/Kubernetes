@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   deploy_to_kubernetes:
     docker:
-      - image: alpine/k8s:1.26.13  # Use a Docker image with kubectl tools
+      - image: alpine/k8s:1.26.13
     steps:
       - checkout  # Checkout the repo files
 
@@ -28,14 +28,18 @@ jobs:
       - run:
           name: Set Up Kubernetes Context for EKS
           command: |
+            # Decode and create the kubeconfig file from KUBECONFIG_DATA
             echo $KUBECONFIG_DATA | base64 -d > kubeconfig
             export KUBECONFIG=kubeconfig
 
-            # Verify the available contexts
-            echo "Available contexts in kubeconfig:"
+            # Debugging Step: Verify KUBECONFIG environment variable
+            echo "Using KUBECONFIG from: $KUBECONFIG"
+            
+            # Debugging Step: List available contexts
+            echo "Listing available contexts in kubeconfig..."
             kubectl config get-contexts
 
-            # Ensure the context for the EKS cluster exists and use it
+            # Debugging Step: Check if the correct context is set
             echo "Using context: $EKS_CLUSTER_NAME"
             if kubectl config get-contexts | grep -q "$EKS_CLUSTER_NAME"; then
               kubectl config use-context $EKS_CLUSTER_NAME
@@ -44,7 +48,7 @@ jobs:
               exit 1
             fi
 
-            # Verify current context
+            # Debugging Step: Verify current context
             kubectl config current-context
 
       # Step 4: Deploy to Kubernetes (EKS)
