@@ -17,14 +17,11 @@ jobs:
             aws configure set default.region $AWS_DEFAULT_REGION
 
       # Step 2: Verify AWS Credentials
-      # aws sts get-caller-identity --query "Arn" --output text
-      # aws ec2 describe-regions --query "Regions[*].RegionName" --output text
-
       - run:
           name: Verify AWS Credentials
-          command: |
-            echo "Verifying AWS credentials..."
-            aws sts get-caller-identity
+          command:
+            - echo "Verifying AWS credentials..."
+            - aws sts get-caller-identity
 
       # Step 3: Set Up Kubernetes Context for EKS
       - run:
@@ -37,14 +34,11 @@ jobs:
             kubectl config get-contexts
             kubectl get pods
 
-           
-
       # Step 4: Deploy to Kubernetes (EKS)
       - run:
           name: Deploy to Kubernetes (EKS)
           command: |
             kubectl run testpod --image=nginx
-
 workflows:
   version: 2
   deploy:
