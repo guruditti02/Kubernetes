@@ -42,17 +42,24 @@ jobs:
             kubectl apply -f mongo.yaml
             kubectl apply -f mongo-configMap.yaml
             kubectl apply -f mongo-express.yaml
+            
+      # Step 5: Create the 'kubernetes-dashboard' namespace if not exists
+      - run:
+          name: Create Kubernetes Dashboard Namespace
+          command: |
+            kubectl create namespace kubernetes-dashboard || echo "Namespace kubernetes-dashboard already exists"
+
 
             
-      # Step 5: Apply Ingress Resources
+      # Step 6: Apply Ingress Resources
       - run:
           name: Apply Ingress Resources
           command: |
             echo "Applying Ingress Manifests..."
             kubectl apply -f dashboard-ingress.yaml
-            kubectl apply -f mongoexpress-ingress.yaml
+            kubectl apply -f mongo-express-ingress.yaml
 
-       # Step 6: Verify  Kubernetes deployment
+       # Step 7: Verify  Kubernetes deployment
       - run:
           name: Verify deployments  
           command: |
