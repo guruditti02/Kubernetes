@@ -43,13 +43,23 @@ jobs:
             kubectl apply -f mongo-configMap.yaml
             kubectl apply -f mongo-express.yaml
 
-       # Step 5: Verify  Kubernetes deployment
+            
+      # Step 5: Apply Ingress Resources
+      - run:
+          name: Apply Ingress Resources
+          command: |
+            echo "Applying Ingress Manifests..."
+            kubectl apply -f dashboard-ingress.yaml
+            kubectl apply -f mongoexpress-ingress.yaml
+
+       # Step 6: Verify  Kubernetes deployment
       - run:
           name: Verify deployments  
           command: |
             echo "Applying WebApp K8s Manifests..."
             kubectl get pods
             kubectl get services
+            kubectl get ingress
             
 workflows:
   version: 2
