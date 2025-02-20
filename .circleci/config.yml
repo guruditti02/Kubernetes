@@ -43,12 +43,7 @@ jobs:
             kubectl apply -f mongo-configMap.yaml
             kubectl apply -f mongo-express.yaml
             
-      # Step 5: Create the 'kubernetes-dashboard' namespace if not exists
-      - run:
-          name: Create Kubernetes Dashboard Namespace
-          command: |
-            kubectl create namespace kubernetes-dashboard || echo "Namespace kubernetes-dashboard already exists"
-
+      
 
             
       # Step 6: Apply Ingress Resources
