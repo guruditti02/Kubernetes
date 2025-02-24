@@ -62,7 +62,7 @@ jobs:
             kubectl get pods
             kubectl get services
             kubectl get ingress
-            kubectl get pods -n kube-system | grep aws-load-balancer-controller
+           
 
             
 workflows:
