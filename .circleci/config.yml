@@ -28,7 +28,7 @@ jobs:
           name: Set Up Kubernetes Context for EKS
           command: |
             echo "Generate K8s Config File using AWS authentication..."
-            aws eks update-kubeconfig --region us-east-1 --name demo-clusture
+            aws eks update-kubeconfig --region us-east-1 --name mongodb
             # Verify the available contexts
             echo "Verify contexts in kubeconfig..."
             kubectl config get-contexts
