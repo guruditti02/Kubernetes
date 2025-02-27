@@ -33,13 +33,13 @@ jobs:
             echo "Verify contexts in kubeconfig..."
             kubectl config get-contexts
 
-      # # Step 4: Deploy to Kubernetes (EKS)
-      # - run:
-      #     name: Deploy to Kubernetes (EKS)
-      #     command: |
-      #       echo "Applying WebApp K8s Manifests..."
-      #       kubectl apply -f mongo-secrets.yaml
-      #       kubectl apply -f mongo.yaml
+      # Step 4: Deploy to Kubernetes (EKS)
+      - run:
+          name: Deploy to Kubernetes (EKS)
+          command: |
+            echo "Applying WebApp K8s Manifests..."
+            kubectl apply -f mongo-secrets.yaml
+            kubectl apply -f mongo.yaml
       #       kubectl apply -f mongo-configMap.yaml
       #       kubectl apply -f mongo-express.yaml
             
