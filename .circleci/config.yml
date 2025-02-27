@@ -50,7 +50,7 @@ jobs:
             echo "Verifying WebApp K8s Manifests..."
             kubectl get pods
             kubectl get services
-            kubectl get ingress
+            
             
 workflows:
   version: 2
