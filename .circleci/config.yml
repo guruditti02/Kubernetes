@@ -51,7 +51,6 @@ jobs:
           name: Apply Ingress Resources
           command: |
             echo "Applying Ingress Manifests..."
-            kubectl apply -f dashboard-ingress.yaml
             kubectl apply -f mongo-express-ingress.yaml
 
        # Step 7: Verify  Kubernetes deployment
