@@ -33,35 +33,35 @@ jobs:
             echo "Verify contexts in kubeconfig..."
             kubectl config get-contexts
 
-      # Step 4: Deploy to Kubernetes (EKS)
-      - run:
-          name: Deploy to Kubernetes (EKS)
-          command: |
-            echo "Applying WebApp K8s Manifests..."
-            kubectl apply -f mongo-secrets.yaml
-            kubectl apply -f mongo.yaml
-            kubectl apply -f mongo-configMap.yaml
-            kubectl apply -f mongo-express.yaml
+      # # Step 4: Deploy to Kubernetes (EKS)
+      # - run:
+      #     name: Deploy to Kubernetes (EKS)
+      #     command: |
+      #       echo "Applying WebApp K8s Manifests..."
+      #       kubectl apply -f mongo-secrets.yaml
+      #       kubectl apply -f mongo.yaml
+      #       kubectl apply -f mongo-configMap.yaml
+      #       kubectl apply -f mongo-express.yaml
             
       
 
             
-      # Step 6: Apply Ingress Resources
-      - run:
-          name: Apply Ingress Resources
-          command: |
-            echo "Applying Ingress Manifests..."
-            kubectl apply -f dashboard-ingress.yaml
-            kubectl apply -f mongo-express-ingress.yaml
+      # # Step 6: Apply Ingress Resources
+      # - run:
+      #     name: Apply Ingress Resources
+      #     command: |
+      #       echo "Applying Ingress Manifests..."
+      #       kubectl apply -f dashboard-ingress.yaml
+      #       kubectl apply -f mongo-express-ingress.yaml
 
-       # Step 7: Verify  Kubernetes deployment
-      - run:
-          name: Verify deployments  
-          command: |
-            echo "Applying WebApp K8s Manifests..."
-            kubectl get pods
-            kubectl get services
-            kubectl get ingress
+      #  # Step 7: Verify  Kubernetes deployment
+      # - run:
+      #     name: Verify deployments  
+      #     command: |
+      #       echo "Applying WebApp K8s Manifests..."
+      #       kubectl get pods
+      #       kubectl get services
+      #       kubectl get ingress
            
 
             
