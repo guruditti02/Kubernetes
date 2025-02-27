@@ -28,7 +28,7 @@ jobs:
           name: Set Up Kubernetes Context for EKS
           command: |
             echo "Generate K8s Config File using AWS authentication..."
-            aws eks update-kubeconfig --region us-east-1 --name mongodb
+            aws eks update-kubeconfig --region us-east-1 --name mongoexpress
             # Verify the available contexts
             echo "Verify contexts in kubeconfig..."
             kubectl config get-contexts
@@ -40,29 +40,28 @@ jobs:
             echo "Applying WebApp K8s Manifests..."
             kubectl apply -f mongo-secrets.yaml
             kubectl apply -f mongo.yaml
-            kubectl get pods
-      #       kubectl apply -f mongo-configMap.yaml
-      #       kubectl apply -f mongo-express.yaml
+            kubectl apply -f mongo-configMap.yaml
+            kubectl apply -f mongo-express.yaml
             
       
 
             
-      # # Step 6: Apply Ingress Resources
-      # - run:
-      #     name: Apply Ingress Resources
-      #     command: |
-      #       echo "Applying Ingress Manifests..."
-      #       kubectl apply -f dashboard-ingress.yaml
-      #       kubectl apply -f mongo-express-ingress.yaml
+      # Step 6: Apply Ingress Resources
+      - run:
+          name: Apply Ingress Resources
+          command: |
+            echo "Applying Ingress Manifests..."
+            kubectl apply -f dashboard-ingress.yaml
+            kubectl apply -f mongo-express-ingress.yaml
 
-      #  # Step 7: Verify  Kubernetes deployment
-      # - run:
-      #     name: Verify deployments  
-      #     command: |
-      #       echo "Applying WebApp K8s Manifests..."
-      #       kubectl get pods
-      #       kubectl get services
-      #       kubectl get ingress
+       # Step 7: Verify  Kubernetes deployment
+      - run:
+          name: Verify deployments  
+          command: |
+            echo "Applying WebApp K8s Manifests..."
+            kubectl get pods
+            kubectl get services
+            kubectl get ingress
            
 
             
