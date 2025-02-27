@@ -40,6 +40,7 @@ jobs:
             echo "Applying WebApp K8s Manifests..."
             kubectl apply -f mongo-secrets.yaml
             kubectl apply -f mongo.yaml
+            kubectl get pods
       #       kubectl apply -f mongo-configMap.yaml
       #       kubectl apply -f mongo-express.yaml
             
