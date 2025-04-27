@@ -1,0 +1,59 @@
+version: 2.1
+
+jobs:
+  deploy_to_kubernetes:
+    docker:
+      - image: alpine/k8s:1.26.13  # Use a Docker image with kubectl tools
+    steps:
+      - checkout  # Checkout the repo files
+
+      # Step 1: Set up AWS Credentials
+      - run:
+          name: Set Up AWS Credentials
+          command: |
+            echo "Setting up AWS credentials"
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region us-east-1
+
+      # Step 2: Verify AWS Credentials
+      - run:
+          name: Verify AWS Credentials
+          command: |
+              echo "Verifying AWS credentials..."
+              aws sts get-caller-identity
+
+      # Step 3: Set Up Kubernetes Context for EKS
+      - run:
+          name: Set Up Kubernetes Context for EKS
+          command: |
+            echo "Generate K8s Config File using AWS authentication..."
+            aws eks update-kubeconfig --region us-east-1 --name mongoexpress
+            # Verify the available contexts
+            echo "Verify contexts in kubeconfig..."
+            kubectl config get-contexts
+
+      # Step 4: Deploy to Kubernetes (EKS)
+      - run:
+          name: Deploy to Kubernetes (EKS)
+          command: |
+            echo "Applying WebApp K8s Manifests..."
+            kubectl apply -f mongo-secrets.yaml
+            kubectl apply -f mongo.yaml
+            kubectl apply -f mongo-configMap.yaml
+            kubectl apply -f mongo-express.yaml
+
+       # Step 5: Verify  Kubernetes deployment
+      - run:
+          name: Verify deployments  
+          command: |
+            echo "Verifying WebApp K8s Manifests..."
+            kubectl get pods
+            kubectl get services
+            
+            
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy_to_kubernetes
